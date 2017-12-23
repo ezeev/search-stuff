@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Find 2.0</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <style>
+      a {
+        color:#834996;
+      }
+
+      a:hover {
+        color: rgb(205, 182, 213);
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <div class="container-fluid">
+      <div class="row justify-content-md-center" style="background-color:#834996; padding-top:10px; padding-bottom:10px;">
+        <div class="col-2" style="text-align: right;color:#FFFFFF;">
+          <h2>Find <small>{WoC}</small></h2>
+        </div>
+        <div class="col-5">
+          <form class="form" method="get">
+              <div class="input-group">
+                <input type="text" name="q" id="q" class="form-control" placeholder="{% if data.q %}{{ data.q }}{% else %}Search for...{% endif %}" aria-label="Search for...">
+                {% if data.woc_sku %}<input type="hidden" name="woc_sku" value="true">{% endif %}
+                {% if data.woc_cat %}<input type="hidden" name="woc_cat" value="true">{% endif %}
+                <span class="input-group-btn">
+                  <button class="btn" type="submit" style="background-color: rgb(205, 182, 213);color:#fff;">Go!</button>
+                </span>
+              </div>
+          </form>
+       </div>
+      </div>
+      <div class="row" style="background-color:rgb(205, 182, 213);padding:10px;color:#fff;">
+        <div class="col-2"></div>
+        <div class="col-10">
+          Wisdom of the Crowd
+          | &nbsp;&nbsp;&nbsp;
+            <input class="form-check-input" type="checkbox" id="woc_sku" value="true" {% if data.woc_sku %}checked="true"{% endif %}> SKU Boosting
+          | &nbsp;&nbsp;&nbsp;
+            <input class="form-check-input" type="checkbox" id="woc_cat" value="true" {% if data.woc_cat %}checked="true"{% endif %}> Category Auto Filtering
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-2" style="padding-top:20px;">
+
+
+          {% if data.woc_cat_msg != "" %}
+            <div class="card w-100">
+              <div class="card-body">
+                <h6 class="card-title"> <i class="fa fa-filter" aria-hidden="true"></i> Auto Filtered</h6>
+                <p class="card-text">
+                  <small>{{ data.woc_cat_msg }}</small>
+                </p>
+              </div>
+            </div>
+            <br />
+
+
+          {% endif %}
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a href="{{ data.item_aggr_q }}" target="_blank">SKU Stats Query</a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ data.cat_aggr_q }}" target="_blank">Category Stats Query</a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ data.main_q }}" target="_blank">Final Solr Query</a>
+                </li>
+              </ul>
+        </div>
+        <div class="col-10">
+            {% block content %}{% endblock %}
+          </div>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+
+  <script language="JavaScript">
+
+    $(document).ready(function() {
+      //woc sku checkbox
+      $('#woc_sku').change(function() {
+          if(this.checked) {
+              window.location.replace(window.location.href + "&woc_sku=true");
+          } else {
+            // remove
+             window.location.replace(window.location.href.replace("&woc_sku=true",""));
+          }
+          $('#woc_sku').val(this.checked);
+      });
+
+      //woc cat checkbox
+      $('#woc_cat').change(function() {
+          if(this.checked) {
+              window.location.replace(window.location.href + "&woc_cat=true");
+          } else {
+            // remove
+             window.location.replace(window.location.href.replace("&woc_cat=true",""));
+          }
+          $('#woc_sku').val(this.checked);
+      });
+    });
+
+
+  </script>
+
+  </body>
+</html>

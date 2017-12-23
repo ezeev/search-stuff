@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+        <!-- Search results -->
+<div class="row " style="padding-top:20px;">
+    <div class="col-3"></div>
+    <div class="col-9">
+    Found {{ data.results.response.numFound }} products in {{ data.results.responseHeader.QTime }} milliseconds
+    </div>
+</div>
+
+    {% for doc in data.results.response.docs %}
+<div class="row" style="padding-top:20px;"></div>
+        <div class="row">
+           <div class="col-2">
+                <img src="{{ doc.image_s }}" style="max-width:150px;" />
+           </div>
+            <div class="col-10">{{ doc.name_s }}<br/>
+                <strong>Wisdom of the Crowd</strong>:
+                {% if doc.sku_s in data.sku_bq_dict.keys() %}
+                    <span class="badge badge-success">
+                        SKU Boost: {{ data.sku_bq_dict[doc.sku_s] }}
+                    </span>
+                {% endif %}
+                <br/>
+                <strong>SKU</strong>: {{doc.sku_s}} <br/>
+                <strong>Score</strong>: {{ doc.score }}<br/>
+                <strong>Brand/Manufacturer</strong>: {{ doc.manufacturer_s }}<br />
+                <strong>Categories</strong>: <small>{% for cat in doc.cat_id_ss %}{{cat}}, {% endfor %}</small>
+            </div>
+        </div>
+
+    {% endfor %}
+    <!-- end search results -->
+{% endblock %}
