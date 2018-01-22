@@ -64,9 +64,10 @@
               </div>
             </div>
             <br />
-
-
           {% endif %}
+
+            <h6>Solr Queries</h6>
+
               <ul class="nav flex-column">
                 <li class="nav-item">
                   <a href="{{ data.item_aggr_q }}" target="_blank">SKU Stats Query</a>
@@ -78,6 +79,25 @@
                   <a href="{{ data.main_q }}" target="_blank">Final Solr Query</a>
                 </li>
               </ul>
+
+              <p></p>
+
+
+              {% if data.add_params %}
+                <h6>Manually Added Parameters</h6>
+
+                 <ul class="nav flex-column">
+                   {% for param in data.add_params %}
+
+                    <li class="nav-item">
+                     &{{param}}
+                    </li>
+
+                   {% endfor %}
+                </ul>
+              {% endif %}
+
+
         </div>
         <div class="col-10">
             {% block content %}{% endblock %}

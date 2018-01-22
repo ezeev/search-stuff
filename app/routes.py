@@ -2,6 +2,7 @@
 from flask import render_template, request
 from app import app
 import requests
+import operator
 
 
 def scale(max, min, value, scale_min=0.1, scale_max=1.0):
@@ -17,6 +18,9 @@ def scale(max, min, value, scale_min=0.1, scale_max=1.0):
 
 def serializebq(field_name, solr_resp, scale_min, scale_max):
     bq = ""
+
+    if not 'stats' in solr_resp['facets']:
+        return bq
 
     bucket_count = len(solr_resp['facets']['stats']['buckets'])
     max = solr_resp['facets']['stats']['buckets'][0]['x']
@@ -34,8 +38,33 @@ def stats_to_dict(solr_resp):
     return d
 
 
-def bq_to_dict(bq_str):
 
+def signals_to_dict(docs, group_by):
+    bq = {}
+    for doc in docs:
+        if doc['sku_s'] in bq:
+            # add
+            bq[doc['sku_s']] = bq[doc['sku_s']] + doc['event_count_i']
+        else:
+            bq[doc['sku_s']] = doc['event_count_i']
+
+    sorted_x = sorted(bq.items(), key=operator.itemgetter(1), reverse=True)
+
+    return sorted_x
+
+
+def signals_dict_to_bq(signals, bq_field, lower_bound, upper_bound):
+    '''
+    bq = ""
+    for k, v in signals.items():
+        bq += bq_field+":"+k+scale(upper_bound,lower_bound,v,)
+    return bq
+    '''
+    #TODO
+    pass
+
+
+def bq_to_dict(bq_str):
     bq_dict = {}
     for bq in bq_str.split(" "):
         bq_parts = bq.split(":")
@@ -65,17 +94,21 @@ def index():
     cat_aggr = r.json()
 
     # item stats query
-    item_aggr_q = 'http://localhost:8983/solr/bb_clicks_aggr/query?q=%s&defType=edismax&qf=query_txt_en&mm=100%%25&fq=aggr_type_s:item&rows=0&json.facet={ stats:{ type : terms, field : sku_s, limit : 50, sort : { x : desc}, facet: { x : "sum(event_count_i)" } }}' % (q)
+    item_aggr_q = 'http://localhost:8983/solr/bb_clicks_aggr/query?q=%s&defType=edismax&qf=query_txt_en&mm=100%%25&fq=aggr_type_s:item&rows=50&json.facet={ stats:{ type : terms, field : sku_s, limit : 50, sort : { x : desc}, facet: { x : "sum(event_count_i)" } }}' % (q)
     r = requests.get(item_aggr_q)
+
     item_aggr = r.json()
+
+    # signals to dict
+    signals = signals_to_dict(item_aggr['response']['docs'], 'sku_s')
+    for sig in signals:
+        print(sig)
+
+
 
     # generate boost queries from stats
     cat_bq = serializebq('cat_id_ss', cat_aggr, 0.1, 1.0)
     sku_bq = serializebq('sku_s', item_aggr, 0.1, 2.0)
-
-
-
-
 
     # main solr query
     query = 'http://localhost:8983/solr/bb/select?q=%s&fl=*,score&rows=25&defType=edismax&qf=keywords_txt_en&bq=' % (q)
@@ -109,7 +142,14 @@ def index():
             woc_cat_msg = ""
 
 
+    add_params = []
+    if params.get('add_params'):
+        # add to the query
+        add_params = params.get('add_params').split("|")
 
+        for p in add_params:
+            print("WE ARE HERE and p=%s" % (p))
+            query = query + "&" + p
 
 
     r = requests.get(query)
@@ -124,7 +164,8 @@ def index():
             'sku_bq_dict': sku_bq_dict,
             'cat_aggr_q': cat_aggr_q,
             'item_aggr_q': item_aggr_q,
-            'woc_cat_msg': woc_cat_msg
+            'woc_cat_msg': woc_cat_msg,
+            'add_params': add_params
             }
     return render_template('index.html',
                            title='Find 2.0',
