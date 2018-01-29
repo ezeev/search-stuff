@@ -45,9 +45,9 @@
         <div class="col-10">
           Wisdom of the Crowd
           | &nbsp;&nbsp;&nbsp;
-            <input class="form-check-input" type="checkbox" id="woc_sku" value="true" {% if data.woc_sku %}checked="true"{% endif %}> SKU Boosting
+            <input class="form-check-input" type="checkbox" id="woc_sku" value="true" {% if data.woc_sku %}checked="true"{% endif %}> Product Boosting
           | &nbsp;&nbsp;&nbsp;
-            <input class="form-check-input" type="checkbox" id="woc_cat" value="true" {% if data.woc_cat %}checked="true"{% endif %}> Category Auto Filtering
+            <input class="form-check-input" type="checkbox" id="woc_cat" value="true" {% if data.woc_cat %}checked="true"{% endif %}> Category Boosting
         </div>
       </div>
       <div class="row">
@@ -70,18 +70,44 @@
 
               <ul class="nav flex-column">
                 <li class="nav-item">
-                  <a href="{{ data.item_aggr_q }}" target="_blank">SKU Stats Query</a>
+                  <a href="{{ data.item_aggr_q }}" target="_blank">Product Signals Query</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{{ data.cat_aggr_q }}" target="_blank">Category Stats Query</a>
+                  <a href="{{ data.cat_aggr_q }}" target="_blank">Category Signals Query</a>
                 </li>
                 <li class="nav-item">
-                  <a href="{{ data.main_q }}" target="_blank">Final Solr Query</a>
+                  <a href="{{ data.main_q }}" target="_blank">Search Query</a>
                 </li>
               </ul>
 
               <p></p>
 
+                <!--
+                <h6>Signal Stats</h6>
+                <strong>Product click counts</strong>
+                 <ul class="nav flex-column">
+                   {% for sig in data.sku_signals %}
+
+                    <li class="nav-item">
+                     {{ sig[0] }} : {{ sig[1] }}
+                    </li>
+
+                   {% endfor %}
+                </ul>
+                <strong>Category click counts</strong>
+                 <ul class="nav flex-column">
+                   {% for sig in data.cat_signals %}
+
+                    <li class="nav-item">
+                     {{ sig[0] }} : {{ sig[1] }}
+                    </li>
+
+                   {% endfor %}
+                </ul>
+
+
+              <p></p>
+              -->
 
               {% if data.add_params %}
                 <h6>Manually Added Parameters</h6>
@@ -97,11 +123,10 @@
                 </ul>
               {% endif %}
 
-
         </div>
         <div class="col-10">
             {% block content %}{% endblock %}
-          </div>
+        </div>
       </div>
     </div>
 

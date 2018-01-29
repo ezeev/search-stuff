@@ -16,9 +16,16 @@
            </div>
             <div class="col-10">{{ doc.name_s }}<br/>
                 <strong>Wisdom of the Crowd</strong>:
+                {% for cat_id in doc.cat_id_ss %}
+                    {% if cat_id in data.cat_bq_dict.keys() %}
+                        <span class="badge badge-success">
+                            Category Boost: {{ data.cat_bq_dict[cat_id] }}
+                        </span>
+                    {% endif %}
+                {% endfor %}
                 {% if doc.sku_s in data.sku_bq_dict.keys() %}
                     <span class="badge badge-success">
-                        SKU Boost: {{ data.sku_bq_dict[doc.sku_s] }}
+                        Product Boost: {{ data.sku_bq_dict[doc.sku_s] }}
                     </span>
                 {% endif %}
                 <br/>
