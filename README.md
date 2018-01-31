@@ -46,7 +46,7 @@ In the scripts directory in this repo, there are 4 scripts to run. Run them in t
 1.) `python item_aggregations.py` - This will roll up the click counts on weekly windows using the query and product id as the tuple.
 2.) `python category_aggregations.py` - Same as above except it uses the query and category ID as the tuple.
 
-## 6.) Run the Demo App
+### 6.) Run the Demo App
 
 From the root directory of this repo, run `python run.py`.
  
