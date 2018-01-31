@@ -15,6 +15,15 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
+
+dataset_path = '/Users/evanpease/Development/viroonga/search/dataset/train.csv'
+solr_url = 'http://localhost:8983/solr/bb_clicks/update'
+commit_url = 'http://localhost:8983/solr/bb_clicks/update?commit=true'
+delete_url = 'http://localhost:8983/solr/bb_clicks/update?stream.body=<delete><query>*:*</query></delete>'
+
+chunksize = 10000
+batch_count = 0
+
 nltk.download('stopwords')
 ps = PorterStemmer()
 def clean_query(query):
@@ -38,13 +47,7 @@ def convert_date(dt):
     ndt = parse(dt)
     return math.ceil(ndt.timestamp())
 
-dataset_path = '/Users/evanpease/Development/viroonga/search/dataset/train.csv'
-solr_url = 'http://localhost:8983/solr/bb_clicks/update'
-commit_url = 'http://localhost:8983/solr/bb_clicks/update?commit=true'
-delete_url = 'http://localhost:8983/solr/bb_clicks/update?stream.body=<delete><query>*:*</query></delete>'
 
-chunksize = 10000
-batch_count = 0
 
 
 # clear index
